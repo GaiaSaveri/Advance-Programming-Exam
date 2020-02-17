@@ -223,28 +223,29 @@ public:
 	~BST()=default;
 
 	void Balance();
+/**
+*Call: User
+*\param new pair key value
+*\brief call RemoveNodePrivate setting the starting point as root
+*\return void
+*/	
+void erase(const Tk& data);
 
-  void erase(const Tk& data);
-
-	//void erase(const std::pair<Tk,Tv>& data);
-        #ifdef PRINT
-	//print the structure of the tree
-	std::ostream& printTree(std::ostream& os) const;
-        #endif
-  //print pairs key-value ordered by key
-  std::ostream& printOrderedList(std::ostream& os) const;
-	friend std::ostream& operator<<(std::ostream& os, const BST& tree)
-        	{
-        	#ifdef PRINT
-        	return tree.printTree(os);
-        	#endif
-                return tree.printOrderedList(os);
-                  }
-
-
+//void erase(const std::pair<Tk,Tv>& data);
+#ifdef PRINT
+//print the structure of the tree
+std::ostream& printTree(std::ostream& os) const;
+#endif
+//print pairs key-value ordered by key
+std::ostream& printOrderedList(std::ostream& os) const;
+friend std::ostream& operator<<(std::ostream& os, const BST& tree)
+{
+#ifdef PRINT
+return tree.printTree(os);
+#endif
+return tree.printOrderedList(os);
+}
 
 };
-
-
 
 #include"methods.h"
