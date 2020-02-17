@@ -378,3 +378,19 @@ void BST<Tk,Tv,Tc>::PrintChildren(Tk a)
             				std::cout<<"not found"<<std::endl;
             			}
 }
+
+//Balance
+template <class Tk, class Tv, class Tc>
+	void BST<Tk,Tv,Tc>::Balance(){
+
+		std::vector<std::pair<Tk,Tv>> v;					//create the vector for save all the values in the tree
+		v = BalancePrivate(); //arg root		//call balanceprevate function for save the values. Remember that return a vector
+		 clear(); //RemoveSubtree(root.get());								//delete ALL the tree (delete all unter the root = delete all the tree)
+		std::sort( v.begin(), v.end() );					//order the vector in encrease order
+		//root.reset();										//put the root to null pointer (the tree is emptry/not exist)
+    #ifdef TEST
+		for(int i = 0; i<v.size();i++) std::<<v[i].first<<" "<<v[i].second<<" \\"; std::cout<<std::endl;
+    #endif
+    rebuildtree(v, 0, v.size()-1);						/*create a new tree pefectly balance.
+	//	 													  Here we pass the order vector that has insede all the couple key,value of the old tree*/
+	}
