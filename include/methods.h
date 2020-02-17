@@ -353,3 +353,28 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
 					delete match;
 							}
             }
+
+//print the relation between a node and its children
+template <class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::PrintChildren(Tk a)
+{
+            BST<Tk,Tv,Tc>::Node* ptr = BST<Tk,Tv,Tc>::find(a).node();	//create the pointer that will be use point the node with the data that we serch
+            																			//the function retNode is equal to find (return the node with that value)
+            			if (ptr){														//if ptr NOT point to null
+                    std::cout<<std::endl;
+                    if(ptr == root.get()) std::cout<<"Root ";
+            				std::cout<<"Node = " << ptr->data.first << std::endl;		//parent node is the current node
+            				ptr->left == nullptr ?										//ptr left child punt to null
+            					std::cout<<"left child =NULL"<<std::endl:							//if yes cout null
+            					std::cout<<"left child = "<<ptr->left->data.first<<std::endl;			//if no cout the value of the left child
+
+            				ptr->right == nullptr ?										//ptr right child punt to null
+            					std::cout<<"right child =NULL"<<std::endl:						//if yes cout null
+            					std::cout<<"right child = "<<ptr->right->data.first<<std::endl;			//if no cout the value of the right child
+
+                      std::cout << std::endl;
+                        }
+            			else{															//if the ptr point a null ptr
+            				std::cout<<"not found"<<std::endl;
+            			}
+}
