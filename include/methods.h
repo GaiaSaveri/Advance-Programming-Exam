@@ -194,3 +194,66 @@ void BST<Tk,Tv,Tc>::erase(const Tk& data)
     }
   }
 }
+
+//remove root
+template <class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::RemoveRootMach(){
+				//case 0 root have not a chldren
+				if(!(root->left) && !(root->right))
+        {
+					root.reset(); //clear the tree
+				}
+				//case 1 root has one child --> right child
+				else if (!(BST<Tk,Tv,Tc>::root->left.get()) && BST<Tk,Tv,Tc>::root->right.get())
+        {
+					root->right->parent = nullptr;
+					root.reset(root->right.release());
+          #ifdef TEST
+					std::cout<<"The new root contains data " << root->data.first <<std::endl;
+          #endif
+        }
+				//case 1 root has one child --> left child
+				else if ((root->left) && !(root->right))
+        {
+					root->left->parent = nullptr;
+					//root point to the left child (left child = current root)
+					root.reset(root->left.release());
+          #ifdef TEST
+					std::cout<<"The new root contains data " << root->data.first <<std::endl;
+          #endif
+        }
+				//case 2 the root has 2 children
+				else
+        {
+					Node* temp = (root->right.get())->findSmallest();
+					if(comp(temp->data.first,temp->parent->data.first))
+          {
+            if(temp->right) temp->right->parent = temp->parent;
+					  
+            temp->parent->left.release();
+					}
+					else
+          {
+					  temp->parent->right.release();
+					  temp->parent = nullptr;
+					}
+					if(root->left)
+          {
+						root->left->parent = temp;
+						temp->left.reset(root->left.release());
+					}
+					if(root->right)
+          {
+            Node * tempright = root->right.release();
+					  root->right->parent = temp;
+            temp->parent->left.reset(temp->right.release());
+					  temp->right.reset(tempright);
+            temp->parent = nullptr;
+            delete tempright;
+					}
+					root.reset(temp);
+          #ifdef TEST
+					std::cout << "the root was overwitten with key "<< root->data.first<<std::endl;	//allert of the change
+          #endif
+        }
+			}
