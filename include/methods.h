@@ -410,4 +410,19 @@ template <class Tk, class Tv, class Tc>
   		rebuildtree(values,start,middle-1);	//recall the function for repeat the procedure
       rebuildtree(values, middle+1, end);
   	}
-	
+
+//save nodes of before the balance
+ template <class Tk, class Tv, class Tc>
+    	std::vector<std::pair<Tk,Tv>> BST<Tk,Tv,Tc>::BalancePrivate(){
+    		std::vector<std::pair<Tk,Tv>> values;					//vector for save the value in the left part of ptr
+			  Iterator start{this->begin()};
+        Iterator end{this->end()};
+        if(start==end) //tree is Empty
+         return values;
+        else
+        {
+          for(; start!=end; ++start)
+           {values.push_back(*start);}
+          return values;
+        }
+     	}
