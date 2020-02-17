@@ -82,7 +82,7 @@ private:
 
 public:
 
-<<<<<<< HEAD
+
 		/**comparison operator */
 		Tc comp; 
 
@@ -243,10 +243,10 @@ public:
 
 		void erase(const std::pair<Tk,Tv>& data);
 };
-=======
+
 	/**comparison operator */
 	Tc comp;
->>>>>>> 35a796f146e6db6a12e1e9117e89023461c47995
+
 
 	/**
 	 * \brief default constructor.

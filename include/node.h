@@ -16,42 +16,41 @@ struct node {
 
   //BST has to use findSmallest()
   template<class Tk, class Tv, class Tc> friend class BST;
-	//iterator has to use findSmallest() and findBigger()
-	template<class O, class I> friend class iterator;
+  //iterator has to use findSmallest() and findBigger()
+  template<class O, class I> friend class iterator;
 
   /** Data contained in the node */
-	N data;
-	using value_type = N;
-	//every node has to contain a pair key-value
+  N data;
+  using value_type = N;
 
   /** Unique_ptr to the left child node*/
-	std::unique_ptr<node> left;
-  /** Unique_ptr to the right child node*/
-	std::unique_ptr<node> right;
-  /** Rae pointer to the parent node */
-	node* parent;
+  std::unique_ptr<node> left;
+  /** Unique_ptr to the right child node*/ 
+  std::unique_ptr<node> right;
+  /** Raw pointer to the parent node */
+  node* parent;
 
-	/**
+  /**
    * \brief Default constructor for the class node.
    */
-	node();
+  node();
 
   /**
    * \brief Custom constructor for the class node.
    *
    * Initilizes a node only with its data.
    */
-	node(N n)
-	 : data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+  node(N n)
+    : data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
 
-	/**
+  /**
    * \brief Custom constructor for the class node.
    * \param n Data to be inserted in the new node.
    * \param p Parent of the new node.
    *
    * Initializes a node with data and parent node.
    */
-	node(N n, node* p)
+  node(N n, node* p)
 	 : data{n}, left{nullptr}, right{nullptr}, parent{p} {}
 
   /**
@@ -60,23 +59,23 @@ struct node {
    *
    * This constructor creates a node copying the content of another node.
    */
-	node(const node& n)
-	 : data{n.data}, left{nullptr}, right{nullptr}, parent{n.parent} {}
+  node(const node& n)
+   : data{n.data}, left{nullptr}, right{nullptr}, parent{n.parent} {}
 
-	/**
+  /**
    *\brief Default destructor for the class node.
    */
-	~node() noexcept = default;
+  ~node() noexcept = default;
 
-	/**
+  /**
    * \brief Recursive function that returns the leftmost node of the tree having as root the current node.
    * \return node* Pointer to the leftmost node.
    */
-	node* findSmallest() noexcept
-	{
-	 if(left) return left->findSmallest();
-	 return this;
-	}
+  node* findSmallest() noexcept
+  {
+    if(left) return left->findSmallest();
+    return this;
+   }
 
   /**
    * \brief Recursive function that returns the first right ancestor of the current node.
