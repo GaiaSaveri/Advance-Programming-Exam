@@ -257,3 +257,99 @@ void BST<Tk,Tv,Tc>::RemoveRootMach(){
           #endif
         }
 			}
+
+//remove node
+template <class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BST<Tk,Tv,Tc>::Node* match, bool left)
+{
+			//case 0 no children
+			if(!(match->left) && !(match->right))
+      {
+				left == true ?							//the node that we want delete is the left child of its parent?
+					parent->left.reset() :			//if yes put the parent's left pointer to nullptr
+					parent->right.reset();			//esle no put the parent's right pointr to nullptr
+        #ifdef TEST
+				cout<<"the node containing the data " << matchdata<< " was removed"<<endl;
+        #endif
+			}
+			//case 1 one child --> right
+			else if(!(match->left) && (match->right))
+      {
+				if(left == true)
+        {							//the node that we want delete is the left child of its parent?
+					parent->left.release();
+          match->right->parent = parent;
+					parent->left.reset(match->right.release());		//if yes put the parent's left pointer to the left pointr of the node that we want delete
+					delete match;
+					}
+				else
+        {
+          parent->right.release();
+					parent->right.reset(match->right.release());
+			    parent->right->parent = parent;
+					delete match; //delete the node
+				}
+        #ifdef TEST
+				std::cout<<"the node containing the data " << match->data.first<< " was removed"<<std::endl;
+        #endif
+			}
+			//case 1 one child --> left
+			else if((match->left) && !(match->right))
+      {
+				if(left == true)
+        {	//is the node that we want delete the left child of its parent?
+          parent->left.release();
+					parent->left.reset(match->left.release());		//if yes put the parent's left ptr to the left ptr of the node that we want delete
+					parent->left->parent = parent;
+					delete match;
+					}
+				else
+        {
+          parent->right.release();
+					parent->right.reset(match->left.release());
+					parent->right->parent = parent;
+					delete match;
+				}
+        #ifdef TEST
+				cout<<"the node containing the data " << match->data.fisrt<< " was removed"<<endl;
+        #endif
+				}
+			//case 2 have both children
+				else
+        {
+					Node* temp = (match->right.get())->findSmallest();
+					if(comp(temp->data.first, temp->parent->data.first))
+          {
+					temp->parent->left.release();
+				  temp->right->parent = temp->parent;
+          if(!(temp->right)) temp->parent->left.reset(temp->right.release());
+					}
+					else
+          {
+					temp->parent->right.release();
+					temp->parent = nullptr;
+					}
+					if(left == true){
+						parent->left.release();
+						parent->left.reset(temp);
+						temp->parent = parent;
+					}
+					else
+          {
+					  parent->right.release();
+						parent->right.reset(temp);
+						temp->parent = parent;
+					}
+					if (match->left)
+          {
+						match->left->parent = temp;
+						temp->left.reset(match->left.release());
+					}
+					if (match->right)
+          {
+						match->right->parent = temp;
+            temp->right.reset(match->right.release());
+					}
+					delete match;
+							}
+            }
