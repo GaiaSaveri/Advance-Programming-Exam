@@ -173,186 +173,187 @@ typename BST<Tk,Tv,Tc>::Const_iterator BST<Tk,Tv,Tc>::find(const Tk& x) const
 template<class Tk, class Tv, class Tc>
 void BST<Tk,Tv,Tc>::erase(const Tk& data)
 {
-  if(!root) {std::cout<<"Empty tree"<<std::endl;}
-  else //tree is not empty
-  {
-    Iterator it{find(data)};
-    if(it == end()) {std::cout<<"key is not in the tree"<<std::endl;}
-    else
-    {
-      if(it.node()==root.get()) //need to remove the root
-      { RemoveRootMach();}
-      else
-      {
-        Node* match = it.node();
-        Node* parent = match->parent;
-        //need to decide if it is left or right child
-        if(parent->left.get() == match)
-        {RemoveMatch(parent, match, true);}
-        else {RemoveMatch(parent, match, false);}
-      }
-    }
-  }
+ if(!root) {std::cout<<"Empty tree"<<std::endl;}
+ else //tree is not empty
+ {
+   Iterator it{find(data)};
+   if(it == end()) {std::cout<<"key is not in the tree"<<std::endl;}
+   else
+   {
+     if(it.node()==root.get()) //need to remove the root
+       { RemoveRootMach();}
+     else
+     {
+       Node* match = it.node();
+       Node* parent = match->parent;
+       //need to decide if it is left or right child
+       if(parent->left.get() == match)
+         {RemoveMatch(parent, match, true);}
+       else {RemoveMatch(parent, match, false);}
+     }
+   }
+ }
 }
 
 //remove root
 template <class Tk, class Tv, class Tc>
 void BST<Tk,Tv,Tc>::RemoveRootMach(){
-				//case 0 root have not a chldren
-				if(!(root->left) && !(root->right))
-        {
-					root.reset(); //clear the tree
-				}
-				//case 1 root has one child --> right child
-				else if (!(BST<Tk,Tv,Tc>::root->left.get()) && BST<Tk,Tv,Tc>::root->right.get())
-        {
-					root->right->parent = nullptr;
-					root.reset(root->right.release());
-          #ifdef TEST
-					std::cout<<"The new root contains data " << root->data.first <<std::endl;
-          #endif
-        }
-				//case 1 root has one child --> left child
-				else if ((root->left) && !(root->right))
-        {
-					root->left->parent = nullptr;
-					//root point to the left child (left child = current root)
-					root.reset(root->left.release());
-          #ifdef TEST
-					std::cout<<"The new root contains data " << root->data.first <<std::endl;
-          #endif
-        }
-				//case 2 the root has 2 children
-				else
-        {
-					Node* temp = (root->right.get())->findSmallest();
-					if(comp(temp->data.first,temp->parent->data.first))
-          {
-            if(temp->right) temp->right->parent = temp->parent;
-					  
-            temp->parent->left.release();
-					}
-					else
-          {
-					  temp->parent->right.release();
-					  temp->parent = nullptr;
-					}
-					if(root->left)
-          {
-						root->left->parent = temp;
-						temp->left.reset(root->left.release());
-					}
-					if(root->right)
-          {
-            Node * tempright = root->right.release();
-					  root->right->parent = temp;
-            temp->parent->left.reset(temp->right.release());
-					  temp->right.reset(tempright);
-            temp->parent = nullptr;
-            delete tempright;
-					}
-					root.reset(temp);
-          #ifdef TEST
-					std::cout << "the root was overwitten with key "<< root->data.first<<std::endl;	//allert of the change
-          #endif
-        }
-			}
+ //case 0 root have not a chldren
+ if(!(root->left) && !(root->right))
+ {
+   root.reset(); //clear the tree
+ }
+ //case 1 root has one child --> right child
+ else if (!(BST<Tk,Tv,Tc>::root->left.get()) && BST<Tk,Tv,Tc>::root->right.get())
+      {
+	root->right->parent = nullptr;
+	root.reset(root->right.release());
+        #ifdef TEST
+ 	std::cout<<"The new root contains data " << root->data.first <<std::endl;
+        #endif
+      }
+      //case 1 root has one child --> left child
+      else if ((root->left) && !(root->right))
+           {
+	     root->left->parent = nullptr;
+	     //root point to the left child (left child = current root)
+	     root.reset(root->left.release());
+             #ifdef TEST
+	      std::cout<<"The new root contains data " << root->data.first <<std::endl;
+             #endif
+           }
+	   //case 2 the root has 2 children
+	   else
+           {
+	     Node* temp = (root->right.get())->findSmallest();
+	     if(comp(temp->data.first,temp->parent->data.first))
+           {
+      if(temp->right) temp->right->parent = temp->parent;
+				  
+      temp->parent->left.release();
+      }
+      else
+      {
+	temp->parent->right.release();
+	temp->parent = nullptr;
+      }
+      if(root->left)
+      {
+	root->left->parent = temp;
+	temp->left.reset(root->left.release());
+      }
+      if(root->right)
+      {
+        Node * tempright = root->right.release();
+	root->right->parent = temp;
+        temp->parent->left.reset(temp->right.release());
+	temp->right.reset(tempright);
+        temp->parent = nullptr;
+        delete tempright;
+      }
+      root.reset(temp);
+      #ifdef TEST
+        std::cout << "the root was overwitten with key "<< root->data.first<<std::endl;	//allert of the change
+      #endif
+    }
+}
 
 //remove node
 template <class Tk, class Tv, class Tc>
 void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BST<Tk,Tv,Tc>::Node* match, bool left)
 {
-			//case 0 no children
-			if(!(match->left) && !(match->right))
+ //case 0 no children
+ if(!(match->left) && !(match->right))
+ {
+   left == true ?							//the node that we want delete is the left child of its parent?
+   parent->left.reset() :			//if yes put the parent's left pointer to nullptr
+   parent->right.reset();			//esle no put the parent's right pointr to nullptr
+   #ifdef TEST
+    cout<<"the node containing the data " << matchdata<< " was removed"<<endl;
+   #endif
+ }
+ //case 1 one child --> right
+ else if(!(match->left) && (match->right))
       {
-				left == true ?							//the node that we want delete is the left child of its parent?
-					parent->left.reset() :			//if yes put the parent's left pointer to nullptr
-					parent->right.reset();			//esle no put the parent's right pointr to nullptr
-        #ifdef TEST
-				cout<<"the node containing the data " << matchdata<< " was removed"<<endl;
-        #endif
-			}
-			//case 1 one child --> right
-			else if(!(match->left) && (match->right))
-      {
-				if(left == true)
+	if(left == true)
         {							//the node that we want delete is the left child of its parent?
-					parent->left.release();
-          match->right->parent = parent;
-					parent->left.reset(match->right.release());		//if yes put the parent's left pointer to the left pointr of the node that we want delete
-					delete match;
-					}
-				else
-        {
-          parent->right.release();
-					parent->right.reset(match->right.release());
-			    parent->right->parent = parent;
-					delete match; //delete the node
-				}
-        #ifdef TEST
-				std::cout<<"the node containing the data " << match->data.first<< " was removed"<<std::endl;
-        #endif
-			}
-			//case 1 one child --> left
-			else if((match->left) && !(match->right))
-      {
-				if(left == true)
-        {	//is the node that we want delete the left child of its parent?
           parent->left.release();
-					parent->left.reset(match->left.release());		//if yes put the parent's left ptr to the left ptr of the node that we want delete
-					parent->left->parent = parent;
-					delete match;
-					}
-				else
+          match->right->parent = parent;
+          parent->left.reset(match->right.release());		//if yes put the parent's left pointer to the left pointr of the node that we want delete
+          delete match;
+	}
+	else
         {
           parent->right.release();
-					parent->right.reset(match->left.release());
-					parent->right->parent = parent;
-					delete match;
-				}
+	  parent->right.reset(match->right.release());
+	  parent->right->parent = parent;
+	  delete match; //delete the node
+	}
         #ifdef TEST
-				cout<<"the node containing the data " << match->data.fisrt<< " was removed"<<endl;
+	 std::cout<<"the node containing the data " << match->data.first<< " was removed"<<std::endl;
         #endif
-				}
-			//case 2 have both children
-				else
+     }
+     //case 1 one child --> left
+     else if((match->left) && !(match->right))
+          {
+	    if(left == true)
+            {	//is the node that we want delete the left child of its parent?
+              parent->left.release();
+	      parent->left.reset(match->left.release());		//if yes put the parent's left ptr to the left ptr of the node that we want delete
+	      parent->left->parent = parent;
+	      delete match;
+	    }
+	    else
+            {
+              parent->right.release();
+	      parent->right.reset(match->left.release());
+	      parent->right->parent = parent;
+	      delete match;
+	    }
+            #ifdef TEST
+	      cout<<"the node containing the data " << match->data.fisrt<< " was removed"<<endl;
+            #endif
+     }
+     //case 2 have both children
+     else
+     {
+	Node* temp = (match->right.get())->findSmallest();
+	if(comp(temp->data.first, temp->parent->data.first))
         {
-					Node* temp = (match->right.get())->findSmallest();
-					if(comp(temp->data.first, temp->parent->data.first))
-          {
-					temp->parent->left.release();
-				  temp->right->parent = temp->parent;
+	  temp->parent->left.release();
+	  temp->right->parent = temp->parent;
           if(!(temp->right)) temp->parent->left.reset(temp->right.release());
-					}
-					else
-          {
-					temp->parent->right.release();
-					temp->parent = nullptr;
-					}
-					if(left == true){
-						parent->left.release();
-						parent->left.reset(temp);
-						temp->parent = parent;
-					}
-					else
-          {
-					  parent->right.release();
-						parent->right.reset(temp);
-						temp->parent = parent;
-					}
-					if (match->left)
-          {
-						match->left->parent = temp;
-						temp->left.reset(match->left.release());
-					}
-					if (match->right)
-          {
-						match->right->parent = temp;
-            temp->right.reset(match->right.release());
-					}
-					delete match;
-							}
-            }
+	}
+	else
+        {
+	  temp->parent->right.release();
+	  temp->parent = nullptr;
+	}
+	if(left == true)
+	{
+	 parent->left.release();
+	 parent->left.reset(temp);
+	 temp->parent = parent;
+	}
+	else
+        {
+	  parent->right.release();
+	  parent->right.reset(temp);
+	  temp->parent = parent;
+	}
+	if (match->left)
+        {
+	  match->left->parent = temp;
+	  temp->left.reset(match->left.release());
+	}
+	if (match->right)
+        {
+	  match->right->parent = temp;
+          temp->right.reset(match->right.release());
+	}
+  delete match;
+  }
+}
 
 //print the relation between a node and its children
 template <class Tk, class Tv, class Tc>
