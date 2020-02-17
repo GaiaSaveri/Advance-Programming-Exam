@@ -168,3 +168,29 @@ typename BST<Tk,Tv,Tc>::Const_iterator BST<Tk,Tv,Tc>::find(const Tk& x) const
   else
     return cend();
 }
+
+//erase
+template<class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::erase(const Tk& data)
+{
+  if(!root) {std::cout<<"Empty tree"<<std::endl;}
+  else //tree is not empty
+  {
+    Iterator it{find(data)};
+    if(it == end()) {std::cout<<"key is not in the tree"<<std::endl;}
+    else
+    {
+      if(it.node()==root.get()) //need to remove the root
+      { RemoveRootMach();}
+      else
+      {
+        Node* match = it.node();
+        Node* parent = match->parent;
+        //need to decide if it is left or right child
+        if(parent->left.get() == match)
+        {RemoveMatch(parent, match, true);}
+        else {RemoveMatch(parent, match, false);}
+      }
+    }
+  }
+}
