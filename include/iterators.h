@@ -16,11 +16,11 @@ template<class N, class I>
 class iterator
 {
 
-	//BST has to use node()
+  //BST has to use node()
   template<class Tk, class Tv, class Tc> friend class BST;
 
   /** Raw pointer to a node of type N */
-	N* current; //an iterator is basically a pointer to a node
+  N* current; //an iterator is basically a pointer to a node
 
 public:
 
@@ -49,7 +49,7 @@ public:
 	using iterator_category = std::forward_iterator_tag;
 	using difference_type = std::ptrdiff_t;
 
-  /**
+       /**
 	 * \brief Overload of the pre-increment operator ++.
 	 * \return iterator& Incremented iterator.
 	 *
@@ -66,7 +66,6 @@ public:
 	  ++(*this);
 	  return tmp;
 	}
-
 
 	/**
 	 * \brief Overload of the operator ==.
