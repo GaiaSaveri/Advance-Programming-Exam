@@ -359,71 +359,71 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
 template <class Tk, class Tv, class Tc>
 void BST<Tk,Tv,Tc>::PrintChildren(Tk a)
 {
-            BST<Tk,Tv,Tc>::Node* ptr = BST<Tk,Tv,Tc>::find(a).node();	//create the pointer that will be use point the node with the data that we serch
-            																			//the function retNode is equal to find (return the node with that value)
-            			if (ptr){														//if ptr NOT point to null
-                    std::cout<<std::endl;
-                    if(ptr == root.get()) std::cout<<"Root ";
-            				std::cout<<"Node = " << ptr->data.first << std::endl;		//parent node is the current node
-            				ptr->left == nullptr ?										//ptr left child punt to null
-            					std::cout<<"left child =NULL"<<std::endl:							//if yes cout null
-            					std::cout<<"left child = "<<ptr->left->data.first<<std::endl;			//if no cout the value of the left child
-
-            				ptr->right == nullptr ?										//ptr right child punt to null
-            					std::cout<<"right child =NULL"<<std::endl:						//if yes cout null
-            					std::cout<<"right child = "<<ptr->right->data.first<<std::endl;			//if no cout the value of the right child
-
-                      std::cout << std::endl;
-                        }
-            			else{															//if the ptr point a null ptr
-            				std::cout<<"not found"<<std::endl;
-            			}
+  BST<Tk,Tv,Tc>::Node* ptr = BST<Tk,Tv,Tc>::find(a).node();	//create the pointer that will be use point the node with the data that we serch
+         																			//the function retNode is equal to find (return the node with that value)
+  if (ptr)
+  {														//if ptr NOT point to null
+    std::cout<<std::endl;
+    if(ptr == root.get()) std::cout<<"Root ";
+    std::cout<<"Node = " << ptr->data.first << std::endl;		//parent node is the current node
+    ptr->left == nullptr ?										//ptr left child punt to null
+       std::cout<<"left child =NULL"<<std::endl:							//if yes cout null
+       std::cout<<"left child = "<<ptr->left->data.first<<std::endl;			//if no cout the value of the left child
+    ptr->right == nullptr ?										//ptr right child punt to null
+    std::cout<<"right child =NULL"<<std::endl:						//if yes cout null
+    std::cout<<"right child = "<<ptr->right->data.first<<std::endl;			//if no cout the value of the right child
+    std::cout << std::endl;
+  }
+  else
+  {															//if the ptr point a null ptr
+    std::cout<<"not found"<<std::endl;
+  }
 }
 
 //Balance
 template <class Tk, class Tv, class Tc>
-	void BST<Tk,Tv,Tc>::Balance(){
-
-		std::vector<std::pair<Tk,Tv>> v;					//create the vector for save all the values in the tree
-		v = BalancePrivate(); //arg root		//call balanceprevate function for save the values. Remember that return a vector
-		 clear(); //RemoveSubtree(root.get());								//delete ALL the tree (delete all unter the root = delete all the tree)
-		std::sort( v.begin(), v.end() );					//order the vector in encrease order
-		//root.reset();										//put the root to null pointer (the tree is emptry/not exist)
-    #ifdef TEST
-		for(int i = 0; i<v.size();i++) std::<<v[i].first<<" "<<v[i].second<<" \\"; std::cout<<std::endl;
-    #endif
-    rebuildtree(v, 0, v.size()-1);						/*create a new tree pefectly balance.
-	//	 													  Here we pass the order vector that has insede all the couple key,value of the old tree*/
-	}
+void BST<Tk,Tv,Tc>::Balance()
+{
+  std::vector<std::pair<Tk,Tv>> v;					//create the vector for save all the values in the tree
+  v = BalancePrivate(); //arg root		//call balanceprevate function for save the values. Remember that return a vector
+  clear(); //RemoveSubtree(root.get());								//delete ALL the tree (delete all unter the root = delete all the tree)
+  std::sort( v.begin(), v.end() );					//order the vector in encrease order
+  //root.reset();										//put the root to null pointer (the tree is emptry/not exist)
+  #ifdef TEST
+    for(int i = 0; i<v.size();i++) std::<<v[i].first<<" "<<v[i].second<<" \\"; std::cout<<std::endl;
+  #endif
+  rebuildtree(v, 0, v.size()-1);						//create a new tree pefectly balance.
+}
 
 //rebuild the tree in balance version
- template <class Tk, class Tv, class Tc>
-  void BST<Tk,Tv,Tc>::rebuildtree (std::vector<std::pair<Tk,Tv>>& values, int start, int end){
+template <class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::rebuildtree (std::vector<std::pair<Tk,Tv>>& values, int start, int end)
+{
+  if(start > end)
+  {						/*if the start point is equal to the end point.
+   		  it means that all the value in the vector were been put inside the new balance tree*/
+    return;								//you put all value. Finish
+  }
 
-  		if(start > end){						/*if the start point is equal to the end point.
-  										  		  it means that all the value in the vector were been put inside the new balance tree*/
-  			return;								//you put all value. Finish
-  		}
-
-  		int middle = (end+start)/2;				//calculate the middle point in the vector. In the middle there is the intermediate value
-  		insert(values[middle]);					//insert in the tree the intermediate value
-
-  		rebuildtree(values,start,middle-1);	//recall the function for repeat the procedure
-      rebuildtree(values, middle+1, end);
-  	}
+  int middle = (end+start)/2;				//calculate the middle point in the vector. In the middle there is the intermediate value
+  insert(values[middle]);					//insert in the tree the intermediate value
+  rebuildtree(values,start,middle-1);	//recall the function for repeat the procedure
+  rebuildtree(values, middle+1, end);
+}
 
 //save nodes of before the balance
- template <class Tk, class Tv, class Tc>
-    	std::vector<std::pair<Tk,Tv>> BST<Tk,Tv,Tc>::BalancePrivate(){
-    		std::vector<std::pair<Tk,Tv>> values;					//vector for save the value in the left part of ptr
-			  Iterator start{this->begin()};
-        Iterator end{this->end()};
-        if(start==end) //tree is Empty
-         return values;
-        else
-        {
-          for(; start!=end; ++start)
-           {values.push_back(*start);}
-          return values;
-        }
-     	}
+template <class Tk, class Tv, class Tc>
+std::vector<std::pair<Tk,Tv>> BST<Tk,Tv,Tc>::BalancePrivate()
+{
+  std::vector<std::pair<Tk,Tv>> values;					//vector for save the value in the left part of ptr
+  Iterator start{this->begin()};
+  Iterator end{this->end()};
+  if(start==end) //tree is Empty
+    return values;
+  else
+  {
+    for(; start!=end; ++start)
+      {values.push_back(*start);}
+    return values;
+  }
+}
