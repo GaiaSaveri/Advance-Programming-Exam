@@ -10,9 +10,9 @@
 #include<memory> //unique_ptr
 #include<utility> //pair
 #include<iostream>
-//#include<string>
+#include<string>
 #include<vector>
-//#include<algorithm>
+#include<algorithm>
 
 #include"node.h"
 #include"iterators.h"
