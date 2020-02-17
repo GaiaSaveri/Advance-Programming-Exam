@@ -82,7 +82,7 @@ private:
 
 public:
 
-<<<<<<< HEAD
+
 		/**comparison operator */
 		Tc comp; 
 
