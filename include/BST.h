@@ -190,7 +190,15 @@ public:
 		Const_iterator cend() const
 			{ return Const_iterator{nullptr};}		
 
-
+                //emplace
+                template<typename.. Types>
+                void emplace(Types&&.. args)
+                {
+                  #ifdef TEST
+                  std::cout<<"Emplace"<<std::endl;
+                  #endif
+                  insert(std::make_pair{std::forward<Types>(args)...});
+                }
 
 		//clear the content of the tree
 		//recursively remove the nodes
