@@ -394,3 +394,20 @@ template <class Tk, class Tv, class Tc>
     rebuildtree(v, 0, v.size()-1);						/*create a new tree pefectly balance.
 	//	 													  Here we pass the order vector that has insede all the couple key,value of the old tree*/
 	}
+
+//rebuild the tree in balance version
+ template <class Tk, class Tv, class Tc>
+  void BST<Tk,Tv,Tc>::rebuildtree (std::vector<std::pair<Tk,Tv>>& values, int start, int end){
+
+  		if(start > end){						/*if the start point is equal to the end point.
+  										  		  it means that all the value in the vector were been put inside the new balance tree*/
+  			return;								//you put all value. Finish
+  		}
+
+  		int middle = (end+start)/2;				//calculate the middle point in the vector. In the middle there is the intermediate value
+  		insert(values[middle]);					//insert in the tree the intermediate value
+
+  		rebuildtree(values,start,middle-1);	//recall the function for repeat the procedure
+      rebuildtree(values, middle+1, end);
+  	}
+	
