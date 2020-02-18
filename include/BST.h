@@ -45,14 +45,6 @@ private:
 	std::pair<Iterator, bool> insertPrivate(T&& x);
 
 
-        /**
-         * \brief Recursive function for deleting a subtree.
-         * \param n root of the subtree to be deleted.
-         *
-         * Private auxiliary function. Called inside the function clear().
-         */
-	//void deleteNode(std::unique_ptr<Node>& n);
-
 	/**
          * \brief Recursive function for making a deep copy of a subtree.
          * \param n root of the subtree to be copied.

@@ -12,6 +12,44 @@
 #include<vector>
 #include<algorithm>
 
+//copy semantics
+template<class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::copy(const std::unique_ptr<typename BST<Tk,Tv,Tc>::Node>& n)
+{
+  if(n) //the node from which we have to copy is not empty
+    {
+      (void)insert(n->data); //we purposely ignore the return type of insert
+      copy(n->left); //copy all left branch
+      copy(n->right); //copy all right branch
+    }
+}
+
+
+template<class Tk, class Tv, class Tc>
+BST<Tk, Tv, Tc>& BST<Tk,Tv,Tc>::operator=(const BST<Tk, Tv, Tc>& tree)
+{
+  #ifdef TEST
+  std::cout<<"copy assignment"<<std::endl;
+  #endif
+  //remove the content of the current tree
+  clear();
+  copy(tree.root);
+  //deep copy all the input tree inside the current treee
+  return *this;
+}
+
+//move semantics
+template<class Tk, class Tv, class Tc>
+BST<Tk, Tv, Tc>& BST<Tk,Tv,Tc>::operator=(BST<Tk, Tv, Tc>&& tree)
+{
+  #ifdef TEST
+  std::cout<<"move assignment"<<std::endl;
+  #endif
+  root=std::move(tree.root);
+  //move the content of input tree inside the current tree
+  return *this;
+}
+
 //it begin
 template<class Tk, class Tv, class Tc>
 typename BST<Tk,Tv,Tc>::Iterator BST<Tk,Tv,Tc>::begin() noexcept
@@ -169,6 +207,33 @@ typename BST<Tk,Tv,Tc>::Const_iterator BST<Tk,Tv,Tc>::find(const Tk& x) const
     return cend();
 }
 
+//operator []
+template<class Tk, class Tv, class Tc>
+Tv& BST<Tk,Tv,Tc>::operator[](const Tk& k)
+{
+  #ifdef TEST
+  std::cout<<std::endl;
+  std::cout<<"lvalue []"<<std::endl;
+  #endif
+  //insert doesn't modify the tree if the key is already present
+  const pair p{k, Tv{}}; //second argument default ctor
+  Iterator it{insert(p).first};
+  return it->second;
+}
+
+
+template<class Tk, class Tv, class Tc>
+Tv& BST<Tk,Tv,Tc>::operator[](Tk&& k)
+{
+  #ifdef TEST
+  std::cout<<std::endl;
+  std::cout<<"rvalue []"<<std::endl;
+  #endif
+  pair p{k, Tv{}}; //second argument default ctor
+  Iterator it{insert(std::move(p)).first}; //rvalue insert
+  return it->second;
+}
+
 //erase
 template<class Tk, class Tv, class Tc>
 void BST<Tk,Tv,Tc>::erase(const Tk& data)
@@ -269,7 +334,7 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
    parent->left.reset() :			//if yes put the parent's left pointer to nullptr
    parent->right.reset();			//esle no put the parent's right pointr to nullptr
    #ifdef TEST
-    cout<<"the node containing the data " << matchdata<< " was removed"<<endl;
+    cout<<"the node containing the data " << match->data.first<< " was removed"<<endl;
    #endif
  }
  //case 1 one child --> right
@@ -314,7 +379,7 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
 	      cout<<"the node containing the data " << match->data.fisrt<< " was removed"<<endl;
             #endif
      }
-     //case 2 have both children
+     //case 2 --> both children
      else
      {
 	Node* temp = (match->right.get())->findSmallest();
@@ -407,7 +472,7 @@ void BST<Tk,Tv,Tc>::rebuildtree (std::vector<std::pair<Tk,Tv>>& values, int star
 
   int middle = (end+start)/2;				//calculate the middle point in the vector. In the middle there is the intermediate value
   insert(values[middle]);					//insert in the tree the intermediate value
-  rebuildtree(values,start,middle-1);	//recall the function for repeat the procedure
+  rebuildtree(values,start,middle-1);	//recall the function to repeat the procedure
   rebuildtree(values, middle+1, end);
 }
 
@@ -415,7 +480,7 @@ void BST<Tk,Tv,Tc>::rebuildtree (std::vector<std::pair<Tk,Tv>>& values, int star
 template <class Tk, class Tv, class Tc>
 std::vector<std::pair<Tk,Tv>> BST<Tk,Tv,Tc>::BalancePrivate()
 {
-  std::vector<std::pair<Tk,Tv>> values;					//vector for save the value in the left part of ptr
+  std::vector<std::pair<Tk,Tv>> values;					//vector for saving the values
   Iterator start{this->begin()};
   Iterator end{this->end()};
   if(start==end) //tree is Empty
@@ -427,3 +492,59 @@ std::vector<std::pair<Tk,Tv>> BST<Tk,Tv,Tc>::BalancePrivate()
     return values;
   }
 }
+
+//print ordered list
+template<class Tk, class Tv, class Tc>
+std::ostream& BST<Tk,Tv,Tc>::printOrderedList(std::ostream& os) const
+{
+  Const_iterator start{cbegin()};
+  Const_iterator stop{cend()};
+  if (start == stop)
+   return os << "Empty tree"<<std::endl;
+  else
+  {
+    while(start!=stop)
+    {
+    os<<(*start).first<<":"<<(*start).second<<"    ";
+    ++start;
+    }
+    return os;
+  }
+}
+
+#ifdef PRINT
+//print node (private)
+template<class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::printNode(const std::unique_ptr<typename BST<Tk,Tv,Tc>::Node>& n, std::ostream& os) const
+{
+  os << "(" << n->data.first << ":" << n->data.second << ")";
+}
+
+//print the structure of the tree (private)
+template<class Tk, class Tv, class Tc>
+void BST<Tk,Tv,Tc>::printBST(const std::string& prefix, const std::unique_ptr<typename BST<Tk,Tv,Tc>::Node>& n, bool nleft, std::ostream& os) const
+{
+ if(n)
+ {
+    os << prefix;
+    os << (nleft ? "├──" : "└──" );
+    printNode(n, os);
+    std::cout << std::endl;
+    printBST( prefix + (nleft ? "│   " : "    "), n->left, true, os);
+    printBST( prefix + (nleft ? "│   " : "    "), n->right, false, os);
+  }
+}
+
+//print Tree (public)
+template<class Tk, class Tv, class Tc>
+std::ostream& BST<Tk,Tv,Tc>::printTree(std::ostream& os) const
+{
+ if(!root)
+  {
+   return os << "Empty tree";
+  }
+  else  printBST("", root, false, os);
+  return os;
+
+}
+#endif

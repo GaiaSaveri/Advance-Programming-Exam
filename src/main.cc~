@@ -1,0 +1,92 @@
+#include<iostream>
+#include<memory>
+#include<utility>
+
+
+#include"BST.h"
+
+
+int main()
+{
+  /** testing binary search tree constructors */
+  BST<int,int> bst0{}; //default ctor
+  std::pair<int, int> pair0=std::make_pair(0, 1);
+  BST<int,int> bst1{pair0}; //custom ctor
+
+  /** testing clear function */
+  BST<int,int> bst3; 
+  bst3.clear(); //run with valgrind --> no leaks! //print test
+
+  /** testing copy semantics */
+  BST<int,int> bst2{bst1}; //copy ctor
+  bst0 = bst1; //copy assignment //test with some print possibly
+  bst1.insert({3,4});
+  auto ko = bst0.find(3);
+  auto ok = bst1.find(3);
+  //if it is actually a deep copy
+  //the key 3 is in bst1 but not in bst0 
+  if(ko == bst0.end() && ok != bst1.end()) std::cout<<"deep copy"<<std::endl;
+  //testing also operators == and != of iterators
+  
+  
+
+  /** testing move semantics */
+  BST<int,int> bst4{std::move(bst0)}; //move ctor
+  bst0 = std::move(bst1); //need to test that bst1 is empty
+
+  /** testing the three methods to insert elements */
+  BST<int,int> bst_int;
+  std::pair<int,int> p8{8,8};
+  std::pair<int,int> p6{6,6};
+  std::pair<int,int> p10{10,10};
+  std::pair<int,int> p3{3,3};
+  std::pair<int,int> p7{7,7};
+  std::pair<int,int> p2{2,2};
+  std::pair<int,int> p15{15,15};
+  std::pair<int,int> p4{4,4};
+  std::pair<int,int> p12{12,12};
+  
+
+  /** testing insert */
+  (void)bst_int.insert(p8); //purposely ignoring return value
+  bool t = bst_int.insert(p10).second;
+  std::cout<<"insert (expected 1): "<<t<<std::endl; //should return 1
+  bool f = bst_int.insert({8,9}).second;
+  std::cout<<"insert (expected 0): "<<f<<std::endl; //should return 0
+  //testing also -> of iterators
+  
+
+  /** testing operator[] */
+  std::cout<<"[8]: "<<bst_int[8]<<" (expected 8)"<<std::endl; //rv[] 
+  std::cout<<"[3]: "<<bst_int[p3.first]<<" (expected 0)"<<std::endl; //lv[]+i
+  std::cout<<bst_int.insert(p3).second<<"      (expected 0)"<<std::endl; 
+  std::cout<<"[2]: "<<bst_int[2]<<" (expected 0)"<<std::endl; //rv[]+i
+  std::cout<<"[8]: "<<bst_int[p8.first]<<" (expected 8)"<<std::endl; //lv[]
+
+  /** testing emplace */
+
+
+  /** testing find */
+  auto it = bst_int.find(8);
+  std::cout<<"("<<(*it).first<<","<<(*it).second<<")"<<"  (expected(8,8))"<<std::endl; //tested also Iterator::operator*()
+  auto it2 = bst_int.find(3);
+  std::cout<<"("<<(*it2).first<<","<<(*it2).second<<")"<<"  (expected(3,0))"<<std::endl; //tested also Iterator::operator*()
+  auto it3 = bst_int.find(0);
+  if(it3==bst_int.end()) std::cout<<"find is ok!"<<std::endl;
+
+
+  /** testing print */
+  BST<int,int> tree;
+  tree.insert(p8);
+  tree.insert(p6);
+  tree.insert(p10);
+  tree.insert(p3);
+  tree.insert(p10);
+  tree.insert(p7);
+  tree.insert(p2);
+  tree.insert(p15);
+  tree.insert(p4);
+  tree.insert(p12);
+
+  tree.printTree();
+}
