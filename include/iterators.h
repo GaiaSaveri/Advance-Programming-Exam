@@ -20,7 +20,7 @@ class iterator
   template<class Tk, class Tv, class Tc> friend class BST;
 
   /** Raw pointer to a node of type N */
-  N* current; //an iterator is basically a pointer to a node
+  N* current = nullptr;
 
 public:
 
@@ -41,7 +41,7 @@ public:
 	/**
 	 * \brief Destructor for the class iterator.
 	 */
-	~iterator() = default;
+	~iterator() noexcept = default;
 
 	using value_type = I;
 	using reference  = value_type&;
@@ -61,7 +61,7 @@ public:
 	 * \brief Overload of the post-increment operator ++.
 	 * \return iterator& Iterator before advancing to the next node.
 	 */
-	iterator operator++(int)
+	iterator operator++(int) noexcept
 	{ iterator tmp {*this};
 	  ++(*this);
 	  return tmp;
@@ -73,7 +73,7 @@ public:
 	 * \param y Iterator that is going to be on the right hand side of the operator.
 	 * \return bool True if and only if the input iterators point to the same node.
 	 *
-	 * The function is declared friend beacuase we need access to private members of the class.
+	 * The function is declared friend becauase we need access to private members of the class.
 	 */
 	friend bool operator==(const iterator& x, const iterator& y)
 	{ return x.current==y.current; }
@@ -86,7 +86,7 @@ public:
 	 *
 	 * The function is declared friend because we need access to private members of the class.
 	 */
-	friend bool operator!=(const iterator& x, const iterator& y) 
+	friend bool operator!=(const iterator& x, const iterator& y)
 	{ return x.current!=y.current; }
 
 	/**
@@ -98,7 +98,7 @@ public:
 
 	/**
 	 * \brief Overload of the arrow operator ->.
-	 * \return pointer Current node tterator is pointing to.
+	 * \return pointer Current node iterator is pointing to.
 	 */
 	pointer operator->() const noexcept
 		{ return &(*(*this)); }
@@ -107,7 +107,7 @@ public:
 	 * \brief Utility function that returns a pointer to the node pointed to by the iterator.
 	 * \retunr N* Pointer to the node the iterator is pointing to.
 	 */
-	N* node() { return current; }
+	N* node() const noexcept { return current; }
 
 
 };

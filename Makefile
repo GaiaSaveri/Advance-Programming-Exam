@@ -1,6 +1,6 @@
 MAIN = main.o
 BENCHMARK = benchmark.o
-DEFINES = NONE # TEST to see function calls
+DEFINES = NONE # TEST to see function calls #PRINT to print the structure of the tree
 CXX = g++
 CXXFLAGS = -std=c++14 -Iinclude -D $(DEFINES) -Wall -Wextra
 
@@ -30,4 +30,4 @@ $(BENCHMARK): src/benchmark.cc
 clean:
 	rm -rf *.o html latex
 
-.PHONY: clean
+.PHONY: clean documentation

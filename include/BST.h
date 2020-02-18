@@ -4,8 +4,8 @@
  * \brief Class implementing a binary search tree.
  */
 
-
-
+#ifndef __BST_
+#define __BST_
 
 #include<memory> //unique_ptr
 #include<utility> //pair
@@ -25,13 +25,14 @@
 template<class Tk, class Tv, class Tc=std::less<Tk>>
 class BST
 {
-private:
+public:
 
   using pair = std::pair<const Tk,Tv>;
   using Node = node<pair>;
   using Iterator = iterator<Node, typename Node::value_type>;
   using Const_iterator = iterator<Node, const typename Node::value_type>;
 
+private:
   /** Unique pointer to the root node */
 	std::unique_ptr<Node> root;
 
@@ -70,14 +71,14 @@ private:
    * \param start First element of the input vector, useful for recursion.
    * \param end Last element of the input vector, useful for recursion.
    */
-  void rebuildtree (std::vector<std::pair<Tk, Tv>>& values, int start, int end); //////////////////manca std:: e <Tk, Tv>
+  void rebuildtree (std::vector<std::pair<Tk, Tv>>& values, int start, int end);
 
   /**
    * \brief Private auxiliary function which stores all the pairs key-value contained
    * in the nodes of the tree in a vector.
    * \return std::vector<pair> Vector containing pairs key-value.
    */
-  std::vector<std::pair<Tk, Tv>> BalancePrivate(); /////////////////////////////////////////////manca std:: e <Tk, Tv>
+  std::vector<std::pair<Tk, Tv>> BalancePrivate();
 
   /**
    * \brief Function that removes the root of the tree and properly sets a new one.
@@ -90,7 +91,8 @@ private:
    * \param match Node to be deleted.
    * \param left Boolean which is true if the node to be deleted is the left child of its parent, false otherwise.
    */
-  void RemoveMatch(Node* parent, Node* match, bool left);
+
+  void RemoveMatch(Node* parent, Node* match, const bool left);
 
 	#ifdef PRINT
   /**
@@ -98,7 +100,7 @@ private:
    * \param n Node of which the function prints the stored data.
    * \param os Stream to which the nodes are sent.
    */
-  void printNode(const std::unique_ptr<Node>& n, std::ostream& os) const;
+  void printNode(const std::unique_ptr<Node>& n, std::ostream& os) const noexcept;
 
   /**
    * \brief Private function used to print the structure of the tree.
@@ -107,7 +109,7 @@ private:
    * \param nleft Boolean specifying if the input node is left child.
    * \param os Stream to which the nodes are sent.
    */
-  void printBST(const std::string& prefix, const std::unique_ptr<Node>& n, bool nleft, std::ostream& os) const;
+  void printBST(const std::string& prefix, const std::unique_ptr<Node>& n, const bool nleft, std::ostream& os) const noexcept;
   #endif
 
 public:
@@ -118,12 +120,7 @@ public:
 	/**
 	 * \brief Default constructor for the class BST.
 	 */
-	BST()
-	{
-	  #ifdef TEST
-	  std::cout<<"default ctor"<<std::endl;
-	  #endif
-	}
+	BST() = default;
 
 	/**
 	 * \brief Custom custroctor.
@@ -140,7 +137,7 @@ public:
 
 	/**
 	 * \brief Copy constructor.
-	 * \param tree binary search tree to be copied.
+	 * \param tree Binary Search Tree to be copied.
    *
 	 * This constructor creates a binary search tree copying the content of
 	 * the tree in input, taking advantage of the private recursive copy
@@ -164,10 +161,11 @@ public:
 	/**
 	 * \brief Move constructor.
 	 * \param tree binary search tree to be moved.
-         *
-         * This constructor creates a binary search tree moving the content of the tree in input.
-         */
-	BST(BST&& tree) : root{std::move(tree.root)}
+   *
+   * This constructor creates a binary search tree moving the content of the
+   * tree in input.
+   */
+	BST(BST&& tree) noexcept : root{std::move(tree.root)}
 	{
 	  #ifdef TEST
           std::cout<<"move ctor"<<std::endl;
@@ -179,14 +177,14 @@ public:
          * \param tree binary search tree to be moved
          * \return BST& modified binary search tree
          */
-	BST& operator=(BST&& tree);
+	BST& operator=(BST&& tree) noexcept;
 
        /**
         * \brief Function to clear the content of the tree.
         *
         * This function resets the root of the tree, so that the whole tree is destroyed without any memory leak.
         */
-       void clear()
+       void clear() noexcept
        {
      	 #ifdef TEST
      	 std::cout<<"deleting the tree"<<std::endl;
@@ -295,20 +293,19 @@ public:
 
         /**
          * \brief Overload of the subscript operator [] for moves.
-         * \param k Node key to be accessed
-         * \return Tv& Node value associated with k
-         *
+         * \param k Node key to be accessed.
+         * \return Tv& Node value associated with k.
          */
 	Tv& operator[] (Tk&& k);
-	
+
 	/**
 	 * \brief Function balancing the tree.
 	 */
 	void Balance();
-        
+
 	/*
 	 * \brief Function wich erase the node containing the input key, if any.
-	 * \param k Key to be deleted. 
+	 * \param k Key to be deleted.
 	 */
         void erase(const Tk& k);
 
@@ -317,17 +314,16 @@ public:
          * \brief Function that prints the structure of the tree.
          * \param os Stream to which the tree should be printed.
          */
-	std::ostream& printTree(std::ostream& os) const;
+	std::ostream& printTree(std::ostream& os) const noexcept;
         #endif
 	/**
-	*\brief Function that print the the relationship between a nod and its children.
+	*\brief Function that prints the the relationship between a node and its children.
 	*\param the key of the node.
-	*\return void.
 	*/
         void PrintChildren(Tk a);
 
         /**
-         * \brief Functions that prints the node in acending order.
+         * \brief Functions that prints the nodes in acending order.
          * \param os Stream to which the nodes are sent.
          */
         std::ostream& printOrderedList(std::ostream& os) const;
@@ -354,3 +350,5 @@ public:
 };
 
 #include"methods.h"
+
+#endif

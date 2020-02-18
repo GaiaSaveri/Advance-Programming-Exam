@@ -25,22 +25,22 @@ struct node {
 
   /** Unique_ptr to the left child node*/
   std::unique_ptr<node> left;
-  /** Unique_ptr to the right child node*/ 
+  /** Unique_ptr to the right child node*/
   std::unique_ptr<node> right;
   /** Raw pointer to the parent node */
-  node* parent;
+  node* parent = nullptr ;
 
   /**
    * \brief Default constructor for the class node.
    */
-  node();
+  node() = default;
 
   /**
    * \brief Custom constructor for the class node.
    *
-   * Initilizes a node only with its data.
+   * Initializes a node only with its data.
    */
-  node(N n)
+  node(const N& n)
     : data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
 
   /**
@@ -50,7 +50,7 @@ struct node {
    *
    * Initializes a node with data and parent node.
    */
-  node(N n, node* p)
+  node(const N& n, node* p)
 	 : data{n}, left{nullptr}, right{nullptr}, parent{p} {}
 
   /**

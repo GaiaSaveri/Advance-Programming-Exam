@@ -40,7 +40,7 @@ BST<Tk, Tv, Tc>& BST<Tk,Tv,Tc>::operator=(const BST<Tk, Tv, Tc>& tree)
 
 //move semantics
 template<class Tk, class Tv, class Tc>
-BST<Tk, Tv, Tc>& BST<Tk,Tv,Tc>::operator=(BST<Tk, Tv, Tc>&& tree)
+BST<Tk, Tv, Tc>& BST<Tk,Tv,Tc>::operator=(BST<Tk, Tv, Tc>&& tree) noexcept
 {
   #ifdef TEST
   std::cout<<"move assignment"<<std::endl;
@@ -194,14 +194,13 @@ typename BST<Tk,Tv,Tc>::Iterator BST<Tk,Tv,Tc>::find(const Tk& x)
 }
 
 //const version
-template<class Tk, class Tv, class Tc> //////////////////////////////////////////////////////manca dichiarazione template
+template<class Tk, class Tv, class Tc>
 typename BST<Tk,Tv,Tc>::Const_iterator BST<Tk,Tv,Tc>::find(const Tk& x) const
 {
   #ifdef TEST
   std::cout<<"const find"<<std::endl;
   #endif
   Const_iterator it{this->findnode(x)};
-  //if the key is not present findPrivate returns end()
   if(it!=end())
     return (*it).first == x ? it : cend();
   else
@@ -295,7 +294,7 @@ void BST<Tk,Tv,Tc>::RemoveRootMach(){
 	     if(comp(temp->data.first,temp->parent->data.first))
            {
       if(temp->right) temp->right->parent = temp->parent;
-				  
+
       temp->parent->left.release();
       }
       else
@@ -326,7 +325,7 @@ void BST<Tk,Tv,Tc>::RemoveRootMach(){
 
 //remove node
 template <class Tk, class Tv, class Tc>
-void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BST<Tk,Tv,Tc>::Node* match, bool left)
+void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BST<Tk,Tv,Tc>::Node* match, const bool left)
 {
  //case 0 no children
  if(!(match->left) && !(match->right))
@@ -395,7 +394,7 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
 	       temp->parent->right.release();
 	       temp->parent = nullptr;
 	     }
-	     
+
      if(left == true)
      {
        parent->left.release();
@@ -428,8 +427,7 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
 template <class Tk, class Tv, class Tc>
 void BST<Tk,Tv,Tc>::PrintChildren(Tk a)
 {
-  BST<Tk,Tv,Tc>::Node* ptr = BST<Tk,Tv,Tc>::find(a).node();	//create the pointer that will be use point the node with the data that we serch
-         																			//the function retNode is equal to find (return the node with that value)
+  BST<Tk,Tv,Tc>::Node* ptr = BST<Tk,Tv,Tc>::find(a).node();	//create the pointer that will be use point the node with the data that we serch         																			
   if (ptr)
   {														//if ptr NOT point to null
     std::cout<<std::endl;
@@ -455,9 +453,7 @@ void BST<Tk,Tv,Tc>::Balance()
 {
   std::vector<std::pair<Tk,Tv>> v;					//create the vector for save all the values in the tree
   v = BalancePrivate(); //arg root		//call balanceprevate function for save the values. Remember that return a vector
-  clear(); //RemoveSubtree(root.get());								//delete ALL the tree (delete all unter the root = delete all the tree)
-  std::sort( v.begin(), v.end() );					//order the vector in encrease order
-  //root.reset();										//put the root to null pointer (the tree is emptry/not exist)
+  clear(); //
   #ifdef TEST
     for(int i = 0; i<v.size();i++) std::<<v[i].first<<" "<<v[i].second<<" \\"; std::cout<<std::endl;
   #endif
@@ -498,7 +494,7 @@ std::vector<std::pair<Tk,Tv>> BST<Tk,Tv,Tc>::BalancePrivate()
 }
 
 //print ordered list
-template<class Tk, class Tv, class Tc>////////////////////////////////////////////dichiarata 2 volte, altra dichiarazione riga 420 circa
+template<class Tk, class Tv, class Tc>
 std::ostream& BST<Tk,Tv,Tc>::printOrderedList(std::ostream& os) const
 {
   Const_iterator start{cbegin()};
@@ -519,14 +515,14 @@ std::ostream& BST<Tk,Tv,Tc>::printOrderedList(std::ostream& os) const
 #ifdef PRINT
 //print node (private)
 template<class Tk, class Tv, class Tc>
-void BST<Tk,Tv,Tc>::printNode(const std::unique_ptr<typename BST<Tk,Tv,Tc>::Node>& n, std::ostream& os) const
+void BST<Tk,Tv,Tc>::printNode(const std::unique_ptr<typename BST<Tk,Tv,Tc>::Node>& n, std::ostream& os) const noexcept
 {
   os << "(" << n->data.first << ":" << n->data.second << ")";
 }
 
 //print the structure of the tree (private)
 template<class Tk, class Tv, class Tc>
-void BST<Tk,Tv,Tc>::printBST(const std::string& prefix, const std::unique_ptr<typename BST<Tk,Tv,Tc>::Node>& n, bool nleft, std::ostream& os) const
+void BST<Tk,Tv,Tc>::printBST(const std::string& prefix, const std::unique_ptr<typename BST<Tk,Tv,Tc>::Node>& n, const bool nleft, std::ostream& os) const noexcept
 {
  if(n)
  {
@@ -541,7 +537,7 @@ void BST<Tk,Tv,Tc>::printBST(const std::string& prefix, const std::unique_ptr<ty
 
 //print Tree (public)
 template<class Tk, class Tv, class Tc>
-std::ostream& BST<Tk,Tv,Tc>::printTree(std::ostream& os) const
+std::ostream& BST<Tk,Tv,Tc>::printTree(std::ostream& os) const noexcept
 {
  if(!root)
   {
