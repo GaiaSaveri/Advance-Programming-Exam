@@ -1,5 +1,7 @@
-#Binary Search Tree
-##Introduction
+# Binary Search Tree 
+
+## Introduction
+
 The exercise consists in implementing a templated Binary Search Tree in the C++ programming language.
 The BST is a hierarchical data structure where it is possible to fastly store, remove and lookup data.
 
@@ -7,7 +9,7 @@ Our implemented tree is a rooted binary tree whose nodes store a pair made of a 
 
 After implementing the binary search tree, we benchmarked it, comparing the performance of both the balanced and unbalanced version against the standard library classes map and unordered\_map.
 
-##Structure of the Code
+## Structure of the Code
 
 The code is composed by three classes:
 
@@ -18,16 +20,16 @@ seemed reasonable to have this class as a nested class of `BST`, we preferred to
 
 * `iterator<N, I>` is a templated class whose members is `current`, a raw pointer to the current node of type `N`. The second template argument `I` is needed to distinguish between constant and non constant iterators. This class is used to traverse the `BST`. As previously said for the class `Node`, we decided to not implement this as a nested class of `BST`, even if it seemed suitable, because it is templated on different types.
 
-##Member Functions
+## Member Functions
 
-####Member functions of the class `node`
+#### Member functions of the class `node`
 In the class `node` we implemented the recursive function `findSmallest` which returns a pointer to the node having the smallest key among all the nodes in the tree having the current node as root, and the recursive function `findBigger`, which returns the node with the smallest key among all the nodes having the key bigger than the one of the current node (namely the inorder successor of a node which is right child of its parent).
 
-####Member functions of the class `iterator`
-
+#### Member functions of the class `iterator`
+ 
 In the class `iterator` we overloaded the operators `*` (which returns the data contained in the node pointed to by the iterator), `->` and `++` (with usual meaning) and a function `node`, which returns a pointer to the node pointed to by the iterator.
 
-####Copy semantics
+#### Copy semantics
 ```
 //private
 void copy(const std::unique_ptr<Node>& n);
@@ -38,7 +40,7 @@ BST& operator=(const BST& tree);
 ```
 Copy semantics is implemented as a copy constructor and the overload of the operator ``=``. It is used to make a deep copy of a binary search tree, with the help of the private function `copy`, which recursively copies all the subtrees of a binary search tree given its root.
 
-####Move semantics
+#### Move semantics
 ```
 //public
 BST(BST&& tree);
@@ -46,7 +48,7 @@ BST& operator=(BST&& tree);
 ```
 Move semantics is implemented as a move constructor and the overload of the operator ``=``. It is used to move the elements of a binary search tree into another tree, without copying them.
 
-####Begin
+#### Begin
 ```
 //public
 Iterator begin() noexcept;
@@ -55,7 +57,7 @@ Const_iterator cbegin() const noexcept;
 ```
 `Begin` is used to start iterations on the tree. It returns an iterator to the leftmost node, the one with the smallest key. These functions call  `findSmallest` function defined in the struct `node`.  
 
-####End
+#### End
 ```
 //public
 Iterator end() noexcept;
@@ -64,7 +66,7 @@ Const_iterator cend() const noexcept;
 ```
 `End` is used to finish an iteration on the tree, it returns an iterator pointing to one past the last element of the tree.
 
-####Insert
+#### Insert
 ```
 //private
 template<class T>
@@ -76,7 +78,7 @@ std::pair<Iterator, bool> insert(pair&& x);
 ```
 The insert functions are used when the user wants to insert a new node inside the BST. Both the public functions call `insertPrivate`, a function defined in the private part of the class. This function uses as argument a pair composed by a key of our new node and a value which will be stored inside the node. The pair is passed to the constructor using `std::forward`, so that we avoid code duplication. In fact the `std::forward` passes the variable as lvalue if we use the first `insert` function, and passes it as rvalue if we use the latter one. If the BST is empty this function inserts the first node that will be the root of our tree. If we already have a BST, the function will insert the node in the right place by making the comparison we have chosen between the keys (in our case we use the operator `std::less<Tk>`). These functions return a pair made up by an iterator that points to the new node inserted and a boolean value, which is false if the node with the key we want to insert has already been inserted, true otherwise.
 
-####Emplace
+#### Emplace
 ```
 //public
 template<typename... Types>
@@ -85,7 +87,7 @@ std::pair<Iterator, bool> emplace(Types&&... args);
 
 The `emplace` function is used when the user wants to insert a new element into the container constructed in-place with the given args, if there is no element with the key in the container. It uses a variadic template so that the user can simply pass two values to this function. It returns a pair composed by an iterator that points to the inserted node, or to the node with that key, and a boolean value, which is false if the node with the key we want to insert has already been inserted, true otherwise.
 
-####Find
+#### Find
 ```
 //private
 Iterator findnode(const Tk& x) const;
@@ -95,7 +97,7 @@ Const_iterator find(const Tk& x) const;
 ```
 The `find` functions are used when the user wants to find a node in the BST with a given key. Both functions call `findnode`, which is a private function that finds the node with the input Key if it exists, the nearest one (meaning the one in which a node with that key should be inserted) otherwise, or `nullptr` if the tree is empty. The first returns an iterator which points to the node that have the given key, the latter returns a const iterator which also points to the given key. If that key is not found both function will return a null iterator (const null iterator in the second case). If the tree is empty they return `end()` or `cend()` respectively.
 
-####Subscripting operator
+#### Subscripting operator
 ```
 //public
 Tv& operator[] (const Tk& k);
@@ -105,7 +107,7 @@ Tv& operator[] (Tk&& k);
 This operator searches for the key it is given in input. If such key is present in the tree, it returns the value correspondent to that key, if it is not, it inserts the pair made by the given key and a default constructed value. In order to do this it relies on the function `insert`.
 This operator has been overloaded twice, according to what has been done with the function `insert`: in the first case an lvalue is passed to the function, in the second the argument is an rvalue.
 
-####Balance
+#### Balance
 ```
 //private
 std::vector<pair> BalancePrivate();
@@ -119,7 +121,7 @@ The function `rebuildtree` is a recursive function used to build a new tree that
 
 The function `Balance` calls the two previously described functions, in order to store the key-value pairs contained in the tree in a sorted vector, delete the old tree using the function `clear`, and reconstruct it.
 
-####Put-to operator
+#### Put-to operator
 ```
 #ifdef PRINT
 //private
@@ -140,14 +142,14 @@ if `PRINT` is not defined at compile time, than the operator `<<` is overloaded 
 
 The operator `<<` is declared `friend` because it needs access to all private variables of the BST class.
 
-####PrintChildren
+#### PrintChildren
 ```
 //public
 void PrintChildren(Tk a);
 ```
 This function, given a key as input, prints on the screen the input key and key of the right and left child of the node containing that key. It is useful for checking the relations that exist in a node, for example before and after the deletion of a node.
 
-####Erase
+#### Erase
 ```
 //private
 void RemoveRootMach();
@@ -174,14 +176,14 @@ The function `RemoveMatch` is used to remove an internal node. As before, we nee
 
 The function `erase` is called when the user wants to cancel a node. It takes as input the key of the node we want to delete. If there isn't any node with that key in the tree or the tree is empty, a warning message is printed on the screen. Otherwise the node is found (by means of the function `find`) and, if it turns out to be the `root`, the helper function `RemoveRootMach` is called, if it is an internal node, the function `RemoveMatch` is called with proper arguments.
 
-####Clear
+#### Clear
 ```
 //public
 void clear();
 ```
 This function deletes the tree by resetting the `root`.
 
-##Benchmark
+## Benchmark
 
 In order to test our Binary Search Tree, we compared its performance, in both the balance and unbalanced version, against the one of the Standard Library map and unordered\_map, with integer key. Because of the implementation of the map and the unordered\_map in STL, we expect that the time to find an element among N for the map is logarithmic, $O(log_{2}{N})$, and for the unordered\_map is constant, O(1). For our balanced Binary Search Tree, we expect at most $O(log_{2}{N})$ and for the unbalanced version at most O(N) in the worst case (a "linked list" binary tree, in which elements are inserted all either in increasing or decreasing order) in order to find an element among N. In the following graph are shown our result, obtained running the code `benchmark.cc`, compiled with -O3 optimization, averaging the five measurement we obtain out of that code.  
 
