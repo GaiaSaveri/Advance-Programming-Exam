@@ -194,6 +194,7 @@ typename BST<Tk,Tv,Tc>::Iterator BST<Tk,Tv,Tc>::find(const Tk& x)
 }
 
 //const version
+template<class Tk, class Tv, class Tc> //////////////////////////////////////////////////////manca dichiarazione template
 typename BST<Tk,Tv,Tc>::Const_iterator BST<Tk,Tv,Tc>::find(const Tk& x) const
 {
   #ifdef TEST
@@ -421,25 +422,7 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
   }
 }
 
-//print ordered
-template<class Tk, class Tv, class Tc>
-std::ostream& BST<Tk,Tv,Tc>::printOrderedList(std::ostream& os) const
-{
-  Const_iterator start{cbegin()};
-  Const_iterator stop{cend()};
-  if (start == stop)
-   return os << "Empty tree"<<std::endl;
-  else
-  {
-    while(start!=stop)
-    {
-      os<<(*start).first<<":"<<(*start).second<<"    ";
-      ++start;
-      //os<<(*start).first<<":"<<(*start).second<<"    ";
-    }
-  return os;
-  }
-}
+
 
 //print the relation between a node and its children
 template <class Tk, class Tv, class Tc>
@@ -515,7 +498,7 @@ std::vector<std::pair<Tk,Tv>> BST<Tk,Tv,Tc>::BalancePrivate()
 }
 
 //print ordered list
-template<class Tk, class Tv, class Tc>
+template<class Tk, class Tv, class Tc>////////////////////////////////////////////dichiarata 2 volte, altra dichiarazione riga 420 circa
 std::ostream& BST<Tk,Tv,Tc>::printOrderedList(std::ostream& os) const
 {
   Const_iterator start{cbegin()};

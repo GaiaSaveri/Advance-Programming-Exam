@@ -70,14 +70,14 @@ private:
    * \param start First element of the input vector, useful for recursion.
    * \param end Last element of the input vector, useful for recursion.
    */
-  void rebuildtree (std::vector<pair>>& values, int start, int end);
+  void rebuildtree (std::vector<std::pair<Tk, Tv>>& values, int start, int end); //////////////////manca std:: e <Tk, Tv>
 
   /**
    * \brief Private auxiliary function which stores all the pairs key-value contained
    * in the nodes of the tree in a vector.
    * \return std::vector<pair> Vector containing pairs key-value.
    */
-  std::vector<pair> BalancePrivate();
+  std::vector<std::pair<Tk, Tv>> BalancePrivate(); /////////////////////////////////////////////manca std:: e <Tk, Tv>
 
   /**
    * \brief Function that removes the root of the tree and properly sets a new one.
