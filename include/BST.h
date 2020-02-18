@@ -161,10 +161,10 @@ public:
 	/**
 	 * \brief Move constructor.
 	 * \param tree binary search tree to be moved.
-   *
-   * This constructor creates a binary search tree moving the content of the
-   * tree in input.
-   */
+         *
+         * This constructor creates a binary search tree moving the content of the
+         * tree in input.
+         */
 	BST(BST&& tree) noexcept : root{std::move(tree.root)}
 	{
 	  #ifdef TEST
