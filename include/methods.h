@@ -357,7 +357,7 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
         #ifdef TEST
 	 std::cout<<"the node containing the data " << match->data.first<< " was removed"<<std::endl;
         #endif
-     }
+       }
      //case 1 one child --> left
      else if((match->left) && !(match->right))
           {
@@ -378,45 +378,66 @@ void BST<Tk,Tv,Tc>::RemoveMatch(typename BST<Tk,Tv,Tc>::Node* parent,typename BS
             #ifdef TEST
 	      cout<<"the node containing the data " << match->data.fisrt<< " was removed"<<endl;
             #endif
+          }
+          //case 2 --> both children
+          else
+          {
+	    Node* temp = (match->right.get())->findSmallest();
+	    if(comp(temp->data.first, temp->parent->data.first))
+             {
+	       temp->parent->left.release();
+	       temp->right->parent = temp->parent;
+               if(!(temp->right)) temp->parent->left.reset(temp->right.release());
+	     }
+	     else
+             {
+	       temp->parent->right.release();
+	       temp->parent = nullptr;
+	     }
+	     
+     if(left == true)
+     {
+       parent->left.release();
+       parent->left.reset(temp);
+       temp->parent = parent;
      }
-     //case 2 --> both children
      else
      {
-	Node* temp = (match->right.get())->findSmallest();
-	if(comp(temp->data.first, temp->parent->data.first))
-        {
-	  temp->parent->left.release();
-	  temp->right->parent = temp->parent;
-          if(!(temp->right)) temp->parent->left.reset(temp->right.release());
-	}
-	else
-        {
-	  temp->parent->right.release();
-	  temp->parent = nullptr;
-	}
-	if(left == true)
-	{
-	 parent->left.release();
-	 parent->left.reset(temp);
-	 temp->parent = parent;
-	}
-	else
-        {
-	  parent->right.release();
-	  parent->right.reset(temp);
-	  temp->parent = parent;
-	}
-	if (match->left)
-        {
-	  match->left->parent = temp;
-	  temp->left.reset(match->left.release());
-	}
-	if (match->right)
-        {
-	  match->right->parent = temp;
-          temp->right.reset(match->right.release());
-	}
-  delete match;
+       parent->right.release();
+       parent->right.reset(temp);
+       temp->parent = parent;
+     }
+     if (match->left)
+     {
+       match->left->parent = temp;
+       temp->left.reset(match->left.release());
+     }
+     if (match->right)
+     {
+       match->right->parent = temp;
+       temp->right.reset(match->right.release());
+     }
+   delete match;
+  }
+}
+
+//print ordered
+template<class Tk, class Tv, class Tc>
+std::ostream& BST<Tk,Tv,Tc>::printOrderedList(std::ostream& os) const
+{
+  Const_iterator start{cbegin()};
+  Const_iterator stop{cend()};
+  if (start == stop)
+   return os << "Empty tree"<<std::endl;
+  else
+  {
+    while(start!=stop)
+    {
+      os<<(*start).first<<":"<<(*start).second<<"    ";
+      ++start;
+      //os<<(*start).first<<":"<<(*start).second<<"    ";
+    }
+  return os;
   }
 }
 
@@ -435,8 +456,8 @@ void BST<Tk,Tv,Tc>::PrintChildren(Tk a)
        std::cout<<"left child =NULL"<<std::endl:							//if yes cout null
        std::cout<<"left child = "<<ptr->left->data.first<<std::endl;			//if no cout the value of the left child
     ptr->right == nullptr ?										//ptr right child punt to null
-    std::cout<<"right child =NULL"<<std::endl:						//if yes cout null
-    std::cout<<"right child = "<<ptr->right->data.first<<std::endl;			//if no cout the value of the right child
+      std::cout<<"right child =NULL"<<std::endl:						//if yes cout null
+      std::cout<<"right child = "<<ptr->right->data.first<<std::endl;			//if no cout the value of the right child
     std::cout << std::endl;
   }
   else
