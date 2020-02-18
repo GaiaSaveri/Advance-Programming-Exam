@@ -319,7 +319,11 @@ public:
          */
 	std::ostream& printTree(std::ostream& os) const;
         #endif
-
+	/**
+	*\brief Function that print the the relationship between a nod and its children.
+	*\param the key of the node.
+	*\return void.
+	*/
         void PrintChildren(Tk a);
 
         /**
